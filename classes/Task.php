@@ -1,99 +1,81 @@
 <?php
 
-
 namespace classes;
-
 
 class Task
 {
-
     const STATUS_NEW = 'new';
     const STATUS_CANCELLED = 'cancelled';
-    const STATUS_IN_WORK = 'in work';
+    const STATUS_IN_WORK = 'inWork';
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
-
-    const ACTION_CANCEL = 'action cancel';
-    const ACTION_IN_WORK = 'action in work';
-    const ACTION_COMPLETE = 'action complete';
-    const ACTION_FAIL = 'action fail';
-
-    const MAP_OF_THE_STATUSES = [
-        'new' => 'новое',
-        'cancelled' => 'отменено',
-        'in work' => 'в работе',
-        'completed' => 'выполнено',
-        'failed' => 'провалено'
+    const ACTION_CANCEL = 'actionCancel';
+    const ACTION_IN_WORK = 'actionInWork';
+    const ACTION_COMPLETE = 'actionComplete';
+    const ACTION_FAIL = 'actionFail';
+    const STATUSES_MAP = [
+        self::STATUS_NEW => 'новое',
+        self::STATUS_CANCELLED => 'отменено',
+        self::STATUS_IN_WORK => 'в работе',
+        self::STATUS_COMPLETED => 'выполнено',
+        self::STATUS_FAILED => 'провалено',
+    ];
+    const ACTIONS_MAP = [
+        self::ACTION_CANCEL => 'отменить',
+        self::ACTION_IN_WORK => 'откликнуться',
+        self::ACTION_COMPLETE => 'выполнено',
+        self::ACTION_FAIL => 'отказаться',
+    ];
+    const NEXT_STATUS_MAP = [
+        self::ACTION_CANCEL => self::STATUS_CANCELLED,
+        self::ACTION_IN_WORK => self::STATUS_IN_WORK,
+        self::ACTION_COMPLETE => self::STATUS_COMPLETED,
+        self::ACTION_FAIL => self::STATUS_FAILED,
+    ];
+    const AVAILABLE_ACTIONS_MAP = [
+        self::STATUS_NEW => [self::ACTION_CANCEL, self::ACTION_IN_WORK],
+        self::STATUS_IN_WORK => [self::ACTION_COMPLETE, self::ACTION_FAIL],
+        self::STATUS_CANCELLED => [],
+        self::STATUS_COMPLETED => [],
+        self::STATUS_FAILED => [],
     ];
 
-    const MAP_OF_THE_ACTIONS = [
-        'action cancel' => 'отменить',
-        'action in work' => 'откликнуться',
-        'action complete' => 'выполнено',
-        'action fail' => 'отказаться'
-    ];
+    private $customerId; //заказчик
+    private $executorId; //исполнитель
 
-
-    private $customer_id; //заказчик
-    private $executor_id; //исполнитель
-
-
-
-    public function __construct(int $customer_id, int $executor_id)
+    public function __construct(int $customerId, int $executorId)
     {
-        $this->customer_id = $customer_id;
-        $this->executor_id = $executor_id;
+        $this->customerId = $customerId;
+        $this->executorId = $executorId;
     }
 
-
-    public function getMapOfTheStatuses()
+    /** @return array */
+    public function getStatusesMap(): array
     {
-        return self::MAP_OF_THE_STATUSES;
+        return self::STATUSES_MAP;
     }
 
-
-    public function getMapOfTheActions()
+    /** @return array */
+    public function getActionsMap(): array
     {
-        return self::MAP_OF_THE_ACTIONS;
+        return self::ACTIONS_MAP;
     }
 
-
-    public function getNextStatus(string $action)
+    /**
+     * @param string $action
+     * @return string
+     */
+    public function getNextStatus(string $action): string
     {
-        switch ($action) {
-            case self::ACTION_CANCEL:
-                return self::STATUS_CANCELLED;
-            case self::ACTION_IN_WORK:
-                return self::STATUS_IN_WORK;
-            case self::ACTION_COMPLETE:
-                return self::STATUS_COMPLETED;
-            case self::ACTION_FAIL:
-                return self::STATUS_FAILED;
-            default:
-                return false;
-        }
+        return self::NEXT_STATUS_MAP[$action];
     }
 
-
-    public function getAvailableActions(string $status)
+    /**
+     * @param string $status
+     * @return array
+     */
+    public function getAvailableActions(string $status): array
     {
-        switch ($status) {
-            case self::STATUS_NEW:
-                return [self::ACTION_CANCEL, self::ACTION_IN_WORK];
-            case self::STATUS_IN_WORK:
-                return [self::ACTION_COMPLETE, self::ACTION_FAIL];
-            case self::STATUS_CANCELLED:
-            case self::STATUS_COMPLETED:
-            case self::STATUS_FAILED:
-                return [];
-            default:
-                return false;
-        }
+        return self::AVAILABLE_ACTIONS_MAP[$status];
     }
-
-
-
-
-
-
 }
