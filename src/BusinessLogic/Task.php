@@ -64,23 +64,17 @@ class Task
      * @param string $action
      * @return string
      */
-    public function getNextStatus(string $action): string
+    public function getNextStatus(string $action): ?string
     {
-        if (array_key_exists($action, self::NEXT_STATUS_MAP)) {
-            return self::NEXT_STATUS_MAP[$action];
-        }
-        return '';
+        return self::NEXT_STATUS_MAP[$action] ?? null;
     }
 
     /**
      * @param string $status
      * @return array
      */
-    public function getAvailableActions(string $status): array
+    public function getAvailableActions(string $status): ?array
     {
-        if (array_key_exists($status, self::AVAILABLE_ACTIONS_MAP)) {
-            return self::AVAILABLE_ACTIONS_MAP[$status];
-        }
-        return [];
+        return self::AVAILABLE_ACTIONS_MAP[$status] ?? null;
     }
 }
