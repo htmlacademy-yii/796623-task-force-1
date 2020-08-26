@@ -1,6 +1,6 @@
 <?php
 
-namespace classes;
+namespace src\BusinessLogic;
 
 class Task
 {
@@ -9,10 +9,12 @@ class Task
     const STATUS_IN_WORK = 'inWork';
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
+
     const ACTION_CANCEL = 'actionCancel';
     const ACTION_IN_WORK = 'actionInWork';
     const ACTION_COMPLETE = 'actionComplete';
     const ACTION_FAIL = 'actionFail';
+
     const STATUSES_MAP = [
         self::STATUS_NEW => 'новое',
         self::STATUS_CANCELLED => 'отменено',
@@ -35,9 +37,6 @@ class Task
     const AVAILABLE_ACTIONS_MAP = [
         self::STATUS_NEW => [self::ACTION_CANCEL, self::ACTION_IN_WORK],
         self::STATUS_IN_WORK => [self::ACTION_COMPLETE, self::ACTION_FAIL],
-        self::STATUS_CANCELLED => [],
-        self::STATUS_COMPLETED => [],
-        self::STATUS_FAILED => [],
     ];
 
     private $customerId; //заказчик
@@ -67,7 +66,10 @@ class Task
      */
     public function getNextStatus(string $action): string
     {
-        return self::NEXT_STATUS_MAP[$action];
+        if (array_key_exists($action, self::NEXT_STATUS_MAP)) {
+            return self::NEXT_STATUS_MAP[$action];
+        }
+        return '';
     }
 
     /**
@@ -76,6 +78,9 @@ class Task
      */
     public function getAvailableActions(string $status): array
     {
-        return self::AVAILABLE_ACTIONS_MAP[$status];
+        if (array_key_exists($status, self::AVAILABLE_ACTIONS_MAP)) {
+            return self::AVAILABLE_ACTIONS_MAP[$status];
+        }
+        return [];
     }
 }
