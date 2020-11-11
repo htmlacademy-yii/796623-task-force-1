@@ -12,10 +12,10 @@ class Task
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
 
-    const ACTION_CANCEL = 'CancelAction';
-    const ACTION_IN_WORK = 'InWorkAction';
-    const ACTION_COMPLETE = 'CompleteAction';
-    const ACTION_FAIL = 'FailAction';
+    const ACTION_CANCEL = CancelAction::class;
+    const ACTION_IN_WORK = InWorkAction::class;
+    const ACTION_COMPLETE = CompleteAction::class;
+    const ACTION_FAIL = FailAction::class;
 
     const STATUSES_MAP = [
         self::STATUS_NEW => 'новое',
@@ -36,36 +36,36 @@ class Task
         self::ACTION_COMPLETE => self::STATUS_COMPLETED,
         self::ACTION_FAIL => self::STATUS_FAILED,
     ];
-//    const AVAILABLE_ACTIONS_MAP = [
-//        self::STATUS_NEW => [self::ACTION_CANCEL, self::ACTION_IN_WORK],
-//        self::STATUS_IN_WORK => [self::ACTION_COMPLETE, self::ACTION_FAIL],
-//    ];
+    const AVAILABLE_ACTIONS_MAP = [
+        self::STATUS_NEW => [self::ACTION_CANCEL, self::ACTION_IN_WORK],
+        self::STATUS_IN_WORK => [self::ACTION_COMPLETE, self::ACTION_FAIL],
+    ];
 
 
-    private $customer_id; //заказчик
-    private $executor_id; //исполнитель
+    private $customerId; //заказчик
+    private $executorId; //исполнитель
 
-    private $cancel_action;
-    private $in_work_action;
-    private $complete_action;
-    private $fail_action;
+//    private $cancelAction;
+//    private $inWorkAction;
+//    private $completeAction;
+//    private $failAction;
+//
+//    private $availableActionsMap;
 
-    private $available_actions_map;
-
-    public function __construct(int $customer_id, int $executor_id)
+    public function __construct(int $customerId, int $executorId)
     {
-        $this->customer_id = $customer_id;
-        $this->executor_id = $executor_id;
+        $this->customerId = $customerId;
+        $this->executorId = $executorId;
 
-        $this->cancel_action   = new CancelAction;
-        $this->in_work_action  = new InWorkAction;
-        $this->complete_action = new CompleteAction;
-        $this->fail_action     = new FailAction;
-
-        $this->available_actions_map = [
-            self::STATUS_NEW => [$this->cancel_action, $this->in_work_action],
-            self::STATUS_IN_WORK => [$this->complete_action, $this->fail_action],
-        ];
+//        $this->cancelAction   = new CancelAction;
+//        $this->inWorkAction  = new InWorkAction;
+//        $this->completeAction = new CompleteAction;
+//        $this->failAction     = new FailAction;
+//
+//        $this->availableActionsMap = [
+//            self::STATUS_NEW => [$this->cancelAction, $this->inWorkAction],
+//            self::STATUS_IN_WORK => [$this->completeAction, $this->failAction],
+//        ];
     }
 
     /** @return array */
@@ -100,20 +100,25 @@ class Task
 
     /**
      * @param string $status
-     * @param int $user_id
+     * @param int $userId
      * @return AbstractAction
      */
-    public function getAvailableActions(string $status, int $user_id): ?AbstractAction
+    public function getAvailableActions(string $status, int $userId): ?AbstractAction
     {
-        if (isset($this->available_actions_map[$status]) && is_array($this->available_actions_map[$status])) {
-            foreach ($this->available_actions_map[$status] as $action_object) {
-                if ($action_object->checkRights($user_id, $this->customer_id, $this->executor_id)) {
-                    return $action_object;
-                }
-            }
+        if (!isset(self::AVAILABLE_ACTIONS_MAP[$status])) {
+            return null;
         }
 
-        return null;
+        $arrMayBeEmpty = array_filter(self::AVAILABLE_ACTIONS_MAP[$status], function ($action) use ($userId) {
+            return $action::checkRights($userId, $this->customerId, $this->executorId);
+        });
+
+        if (empty($arrMayBeEmpty)) {
+            return null;
+        }
+
+        $className = array_pop($arrMayBeEmpty);
+        return new $className;
     }
 
 }

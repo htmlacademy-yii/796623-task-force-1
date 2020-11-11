@@ -15,10 +15,10 @@ abstract class AbstractAction
     abstract protected function getInternalName();
 
     /**
-     * @param int $user_id ID пользователя
-     * @param int $customer_id ID заказчика
-     * @param int $executor_id ID исполнителя
+     * @param int $userId ID пользователя
+     * @param int $customerId ID заказчика
+     * @param int $executorId ID исполнителя
      * @return bool Доступность действия
      */
-    abstract protected function checkRights(int $user_id, int $customer_id, int $executor_id);
+    abstract protected static function checkRights(int $userId, int $customerId, int $executorId);
 }

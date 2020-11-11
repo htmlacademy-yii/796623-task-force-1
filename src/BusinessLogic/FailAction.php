@@ -13,11 +13,11 @@ class FailAction extends AbstractAction
 
     public function getInternalName()
     {
-        return 'fail_action';
+        return 'FailAction';
     }
 
-    public function checkRights(int $user_id, int $customer_id, int $executor_id)
+    public static function checkRights(int $userId, int $customerId, int $executorId)
     {
-        return ($user_id === $executor_id) ? true : false;
+        return $userId === $executorId;
     }
 }

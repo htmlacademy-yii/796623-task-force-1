@@ -13,11 +13,11 @@ class InWorkAction extends AbstractAction
 
     public function getInternalName()
     {
-        return 'in_work_action';
+        return 'InWorkAction';
     }
 
-    public function checkRights(int $user_id, int $customer_id, int $executor_id)
+    public static function checkRights(int $userId, int $customerId, int $executorId)
     {
-        return ($user_id === $executor_id) ? true : false;
+        return $userId === $executorId;
     }
 }
