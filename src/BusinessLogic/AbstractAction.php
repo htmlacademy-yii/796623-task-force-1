@@ -7,12 +7,12 @@ abstract class AbstractAction
     /**
      * @return string Название действия
      */
-    abstract protected function getName();
+    abstract protected static function getName();
 
     /**
      * @return string Внутреннее имя действия
      */
-    abstract protected function getInternalName();
+    abstract protected static function getInternalName();
 
     /**
      * @param int $userId ID пользователя

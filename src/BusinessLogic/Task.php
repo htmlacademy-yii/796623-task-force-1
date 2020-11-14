@@ -41,31 +41,13 @@ class Task
         self::STATUS_IN_WORK => [self::ACTION_COMPLETE, self::ACTION_FAIL],
     ];
 
-
     private $customerId; //заказчик
     private $executorId; //исполнитель
-
-//    private $cancelAction;
-//    private $inWorkAction;
-//    private $completeAction;
-//    private $failAction;
-//
-//    private $availableActionsMap;
 
     public function __construct(int $customerId, int $executorId)
     {
         $this->customerId = $customerId;
         $this->executorId = $executorId;
-
-//        $this->cancelAction   = new CancelAction;
-//        $this->inWorkAction  = new InWorkAction;
-//        $this->completeAction = new CompleteAction;
-//        $this->failAction     = new FailAction;
-//
-//        $this->availableActionsMap = [
-//            self::STATUS_NEW => [$this->cancelAction, $this->inWorkAction],
-//            self::STATUS_IN_WORK => [$this->completeAction, $this->failAction],
-//        ];
     }
 
     /** @return array */
@@ -89,36 +71,20 @@ class Task
         return self::NEXT_STATUS_MAP[$action] ?? null;
     }
 
-//    /**
-//     * @param string $status
-//     * @return array
-//     */
-//    public function getAvailableActions(string $status): ?array
-//    {
-//        return self::AVAILABLE_ACTIONS_MAP[$status] ?? null;
-//    }
-
     /**
      * @param string $status
      * @param int $userId
-     * @return AbstractAction
+     * @return array
      */
-    public function getAvailableActions(string $status, int $userId): ?AbstractAction
+    public function getAvailableActions(string $status, int $userId): ?array
     {
         if (!isset(self::AVAILABLE_ACTIONS_MAP[$status])) {
             return null;
         }
 
-        $arrMayBeEmpty = array_filter(self::AVAILABLE_ACTIONS_MAP[$status], function ($action) use ($userId) {
+        return array_filter(self::AVAILABLE_ACTIONS_MAP[$status], function ($action) use ($userId) {
             return $action::checkRights($userId, $this->customerId, $this->executorId);
         });
-
-        if (empty($arrMayBeEmpty)) {
-            return null;
-        }
-
-        $className = array_pop($arrMayBeEmpty);
-        return new $className;
     }
 
 }

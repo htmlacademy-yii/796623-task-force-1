@@ -6,12 +6,12 @@ use src\BusinessLogic\AbstractAction;
 
 class CancelAction extends AbstractAction
 {
-    public function getName()
+    public static function getName()
     {
         return 'Отменить';
     }
 
-    public function getInternalName()
+    public static function getInternalName()
     {
         return 'CancelAction';
     }

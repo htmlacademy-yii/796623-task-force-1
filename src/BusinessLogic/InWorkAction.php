@@ -6,12 +6,12 @@ use src\BusinessLogic\AbstractAction;
 
 class InWorkAction extends AbstractAction
 {
-    public function getName()
+    public static function getName()
     {
         return 'Откликнуться';
     }
 
-    public function getInternalName()
+    public static function getInternalName()
     {
         return 'InWorkAction';
     }

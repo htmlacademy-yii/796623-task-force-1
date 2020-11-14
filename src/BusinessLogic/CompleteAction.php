@@ -6,12 +6,12 @@ use src\BusinessLogic\AbstractAction;
 
 class CompleteAction extends AbstractAction
 {
-    public function getName()
+    public static function getName()
     {
         return 'Завершить';
     }
 
-    public function getInternalName()
+    public static function getInternalName()
     {
         return 'CompleteAction';
     }
