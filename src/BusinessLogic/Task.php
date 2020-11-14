@@ -2,6 +2,8 @@
 
 namespace src\BusinessLogic;
 
+use src\BusinessLogic\{CompleteAction, FailAction, InWorkAction, CancelAction};
+
 class Task
 {
     const STATUS_NEW = 'new';
@@ -10,10 +12,10 @@ class Task
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
 
-    const ACTION_CANCEL = 'actionCancel';
-    const ACTION_IN_WORK = 'actionInWork';
-    const ACTION_COMPLETE = 'actionComplete';
-    const ACTION_FAIL = 'actionFail';
+    const ACTION_CANCEL = CancelAction::class;
+    const ACTION_IN_WORK = InWorkAction::class;
+    const ACTION_COMPLETE = CompleteAction::class;
+    const ACTION_FAIL = FailAction::class;
 
     const STATUSES_MAP = [
         self::STATUS_NEW => 'новое',
@@ -71,10 +73,18 @@ class Task
 
     /**
      * @param string $status
+     * @param int $userId
      * @return array
      */
-    public function getAvailableActions(string $status): ?array
+    public function getAvailableActions(string $status, int $userId): ?array
     {
-        return self::AVAILABLE_ACTIONS_MAP[$status] ?? null;
+        if (!isset(self::AVAILABLE_ACTIONS_MAP[$status])) {
+            return null;
+        }
+
+        return array_filter(self::AVAILABLE_ACTIONS_MAP[$status], function ($action) use ($userId) {
+            return $action::checkRights($userId, $this->customerId, $this->executorId);
+        });
     }
+
 }
